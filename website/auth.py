@@ -1,8 +1,10 @@
+import smtplib
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from . import db
 from .models import User
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from .models import Post, User, Comment, Like
+from .import db
 
 auth = Blueprint("auth", __name__)
 
@@ -31,6 +33,13 @@ def login():
 def sign_up():
     if request.method == 'POST':
         email = request.form.get("email")
+        
+        message = "Welcome to our Blog community we hope you will enjoy the platform  "
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login("classicdummy0@gmail.com", "dummymail123")
+        server.sendmail("chavann717@gmail.com", email, message)
+
         username = request.form.get("username")
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
@@ -66,4 +75,5 @@ def sign_up():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.logo"))
+

@@ -1,0 +1,2 @@
+password strenght
+alert if caps on

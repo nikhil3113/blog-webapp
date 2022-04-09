@@ -1,17 +1,36 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
-from flask_login import login_required, current_user
-from .models import Post, User, Comment, Like
-from . import db
+from flask_login import login_required, current_user, user_unauthorized
+from .models import Post, User, Comment, Like 
+from .import db
 
 views = Blueprint("views", __name__)
 
 
-@views.route("/")
 @views.route("/home")
 @login_required
 def home():
     posts = Post.query.all()
     return render_template("home.html", user=current_user, posts=posts)
+
+@views.route("/")
+@views.route("/logo")
+def logo():
+    return render_template("logo.html", user=current_user)
+
+@views.route("/profile")
+@views.route("/profile/<id>", methods=['POST'])
+@login_required
+def profile(id=Post.id):
+    posts = Post.query.filter_by(id=Post.text)
+    return render_template("profile.html", user=current_user, posts=posts, id=id)
+
+@views.route("/posts")
+@views.route("/posts/<username>")
+@login_required
+def userProfile(username):
+    use = User.query.filter_by(username=User.id)
+    # posts =  Post.query.filter_by(id=id)
+    return render_template("profile.html", user=current_user, use=use, username=username)
 
 
 @views.route("/create-post", methods=['GET', 'POST'])
@@ -39,8 +58,8 @@ def delete_post(id):
 
     if not post:
         flash("Post does not exist.", category='error')
-    elif current_user.id != post.id:
-        flash('You do not have permission to delete this post.', category='error')
+    # elif current_user.id != post.id:
+    #     flash('You do not have permission to delete this post.', category='error')
     else:
         db.session.delete(post)
         db.session.commit()
@@ -114,5 +133,16 @@ def like(post_id):
         like = Like(author=current_user.id, post_id=post_id)
         db.session.add(like)
         db.session.commit()
+
+    # if like == Like(author=current_user.id, post_id=post_id):
+    #     @app.route("/")
+    #     def mail():
+    #         msg = Message('Hello', sender = 'classicdummy0@gmail.com', recipients = ["User.email"])
+    #         msg.body = "Hello Flask message sent from Flask-Mail"
+    #         mail.send(msg)
+    #         return "Sent"
+  
+
+
 
     return jsonify({"likes": len(post.likes), "liked": current_user.id in map(lambda x: x.author, post.likes)})

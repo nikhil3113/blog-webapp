@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
-    <h1 text-align="center">{% block header %}Posts{% endblock %}</h1>
+    <h1 text-align="center" style="margin: 1em 0px; text-align: center;">{% block header %} Freedom&#127345; {% endblock %}</h1>
     <div id="posts">
       {% for post in posts %}
       <div class="card border-dark">
@@ -14,12 +14,14 @@
             <i
               class="fas fa-thumbs-up"
               id="like-button-{{post.id}}"
+              style="cursor: pointer;"
               onclick="like({{post.id}})"
             ></i>
             {% else %}
             <i
               class="far fa-thumbs-up"
               id="like-button-{{post.id}}"
+              style="cursor: pointer;"
               onclick="like({{post.id}})"
             ></i>
             {% endif %} {% if user.id == post.author %}
@@ -108,11 +110,11 @@
       <br> {% endfor %}
     </div>
     {% block footer %}
-    <div text-align="center">
+    <!-- <div text-align="center">
       <a href="/create-post"
         ><button type="button" class="btn btn-primary btn-lg">
           Create a Post
         </button></a
       >
-    </div>
+    </div> -->
     {% endblock %} {% endblock %}
